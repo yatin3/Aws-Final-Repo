@@ -41,7 +41,10 @@
         .then((res) => {
             console.log(res)
         })
-        .catch((err)=> console.log(err));
+        .catch((err)=> {
+             console.log(err.statusCode);
+            document.body.innerHTML =  document.body.innerHTML + ` User already exist`;
+        });
     });
 
 

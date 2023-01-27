@@ -8,8 +8,11 @@ const userRoute = require('./routes/user');
 const cors = require('cors');
 app.use(cors());
 
+const sequelize = require('./util/database');
+
 app.use(bodyParser.json());
 
 app.use('/user',userRoute);
 
-app.listen(3000);
+sequelize.sync().then((m) => app.listen(3000)).catch(err => console.log(err));
+
