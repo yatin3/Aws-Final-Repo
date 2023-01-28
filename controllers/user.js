@@ -28,14 +28,20 @@ exports.checkUser = (req,res,next) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    User.findOne({ where: { email:email, password:password } })
+    User.findOne({ where: { email:email } })
     .then((user) => {
+      
+      if(user !== null && user.dataValues.password === password){
+         res.status(201).json(user);
 
-      // if(user === null){
-         
-      // }
-      console.log(user);
-      res.status(201).json(user);
+      }
+      else if(user === null){
+         res.status(404).json({message:"user not found"});
+      }
+      else if(user.dataValues.password != password){
+         res.status(401).json({message:"user not authorized"});
+      }
+
     })
     .catch((err)=>{
       console.log(err);
