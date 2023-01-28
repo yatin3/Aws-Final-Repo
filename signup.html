@@ -16,7 +16,10 @@
         <label for="password">Password:</label>
         <input type="password" id="password" required><br>
         <input type="submit" value="Sign Up">
+
+        <a href="./login.html">Log-In Page</a>
        </form>
+
 </body>
 
  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -40,13 +43,20 @@
         axios.post("http://localhost:3000/user/signup",obj)
         .then((res) => {
             console.log(res)
+            document.body.innerHTML =  document.body.innerHTML + ` ${res.data.message}`;
         })
         .catch((err)=> {
-             console.log(err.statusCode);
-            document.body.innerHTML =  document.body.innerHTML + ` User already exist`;
+             console.log(err);
+            document.body.innerHTML =  document.body.innerHTML + ` ${err}`;
         });
     });
 
+    function Login(e){
+       
+     
+
+
+    }
 
 
  </script>
