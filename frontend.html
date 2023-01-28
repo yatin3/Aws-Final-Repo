@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense</title>
+</head>
+<body>
+    
+    <form onsubmit="Expense(event)">
+        <label for="amount">amount:</label>
+        <input id="amount" type="text"><br>
+        <label for="description">description:</label>
+        <input type="text" id="description"><br>
+        <label for="category">category:</label>
+        
+        <select id="category">
+        <option value="food">Food</option>
+        <option value="petrol">Petrol</option>
+        <option value="salary">Salary</option>
+        </select>
+
+        <input type="submit" value="Add Expense">
+
+        <ul id="List">
+
+        </ul>
+    </form>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+
+    <script>
+      
+      const ul = document.getElementById('List');
+
+     async function Expense(e){
+      
+        e.preventDefault();
+
+        const amount = e.target[0].value;
+        const description = e.target[1].value;
+        const category = e.target[2].value;
+
+        const obj = {
+            amount: amount,
+            description:description,
+            category:category
+        }
+
+        const Expense = await axios.post("http://localhost:3000/user/addexpense",obj);
+        console.log(Expense);
+        showUserOnScreen(Expense.data);
+ }
+
+ window.addEventListener('DOMContentLoaded',async () => {
+     
+     const Expenses = await axios.get("http://localhost:3000/user/expense");
+
+     for(let i=0; i<Expenses.data.length; i++){
+        showUserOnScreen(Expenses.data[i]);
+     }
+ })
+
+ function showUserOnScreen(realObj){
+    
+  const li = document.createElement('li');
+
+  const amountChild = document.createTextNode(realObj.amount);
+  const descriptionChild = document.createTextNode(realObj.description);
+  const categoryChild = document.createTextNode(realObj.category);
+
+  const delet = document.createElement('BUTTON');
+  delet.setAttribute('id',realObj.id);
+  delet.appendChild(document.createTextNode("DELETE"));
+
+  li.appendChild(amountChild);
+  li.appendChild(document.createTextNode("-"));
+  li.appendChild(descriptionChild);
+  li.appendChild(document.createTextNode("-"));
+  li.appendChild(categoryChild);
+
+  li.appendChild(delet);
+
+  li.childNodes[5].addEventListener('click',deleteClick);
+     
+  ul.appendChild(li);
+ }
+
+ async function deleteClick(e){
+    
+    e.preventDefault();
+    const id = e.target.parentNode.childNodes[5].id;
+
+   try{
+    axios.get(`http://localhost:3000/user/deleteExpense/${id}`);
+    e.target.parentNode.parentNode.removeChild(e.target.parentNode);
+   }
+   catch(err){
+    console.log(err)
+   }
+ }
+
+    </script>
+
+</body>
+</html>

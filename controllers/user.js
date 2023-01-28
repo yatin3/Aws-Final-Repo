@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
+const Expense = require('../models/expense');
 
 function isStringInvalid(s){
 
@@ -77,4 +78,57 @@ exports.checkUser = async (req,res,next) => {
        return res.status(500).json(err);
     }
 
+};
+
+exports.postExpense = async (req,res,next) =>{
+
+   const amount = req.body.amount;
+   const description = req.body.description;
+   const category = req.body.category;
+
+   try{
+     const answer =  await Expense.create({
+         amount:amount,
+         description:description,
+         category:category
+      })
+
+      res.status(201).json(answer);
+ }
+ catch(err){
+   console.log(err);
+    res.status(500).json(err);
+ }
+
+};
+
+exports.getExpense = async (req,res,next) => {
+  
+   try{
+      const Expenses = await Expense.findAll();
+      console.log(Expenses);
+      res.status(201).json(Expenses); 
+   }
+  catch(err){
+      res.status(404).json(err);
+  }
+
+};
+
+exports.deleteExpense = async(req,res,next) => {
+
+    const id = req.params.ExpenseId;
+
+   try{
+        await Expense.destroy({
+         
+         where :{
+           id:id
+         }
+
+        });
+   }
+   catch(err){
+     res.status(404).json(err);
+   }
 };
