@@ -44,6 +44,7 @@
         .then((res) => {
             console.log(res)
             document.body.innerHTML =  document.body.innerHTML + ` ${res.data.message}`;
+            window.location.href = "C:/Users/yatingoyal/Documents/SharpenerProjects/backend2/Expense-Tracker/login.html";
         })
         .catch((err)=> {
              console.log(err);

@@ -37,7 +37,7 @@
      async function Expense(e){
       
         e.preventDefault();
-
+        const token = localStorage.getItem('token');
         const amount = e.target[0].value;
         const description = e.target[1].value;
         const category = e.target[2].value;
@@ -48,14 +48,14 @@
             category:category
         }
 
-        const Expense = await axios.post("http://localhost:3000/user/addexpense",obj);
+        const Expense = await axios.post("http://localhost:3000/expense/addexpense",obj, { headers: {"Authorization": token}});
         console.log(Expense);
         showUserOnScreen(Expense.data);
  }
 
  window.addEventListener('DOMContentLoaded',async () => {
-     
-     const Expenses = await axios.get("http://localhost:3000/user/expense");
+     const token = localStorage.getItem('token');
+     const Expenses = await axios.get("http://localhost:3000/expense/expense", { headers: {"Authorization": token}});
 
      for(let i=0; i<Expenses.data.length; i++){
         showUserOnScreen(Expenses.data[i]);
@@ -92,8 +92,10 @@
     e.preventDefault();
     const id = e.target.parentNode.childNodes[5].id;
 
+    const token = localStorage.getItem('token');
+
    try{
-    axios.get(`http://localhost:3000/user/deleteExpense/${id}`);
+    await axios.delete(`http://localhost:3000/expense/deleteExpense/${id}`,{ headers: {"Authorization": token}});
     e.target.parentNode.parentNode.removeChild(e.target.parentNode);
    }
    catch(err){

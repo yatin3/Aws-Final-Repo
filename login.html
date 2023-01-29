@@ -40,7 +40,8 @@
             }
             //console.log(response);
             //window.alert('user loggedin successfully');
-            window.location.href = "C:/Users/yatingoyal/Documents/SharpenerProjects/backend2/Expense-Tracker/frontend.html";
+            localStorage.setItem('token',response.data.token);
+          window.location.href = "C:/Users/yatingoyal/Documents/SharpenerProjects/backend2/Expense-Tracker/frontend.html";
          }
 
          catch(error){

@@ -1,6 +1,6 @@
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
-const Expense = require('../models/expense');
+const jwt = require('jsonwebtoken');
 
 function isStringInvalid(s){
 
@@ -40,6 +40,11 @@ exports.postUser = (req,res,next)=>{
 
 };
 
+function generateAccessToken(id,name){
+  
+   return jwt.sign({userid:id, name:name }, '87659937449fgjdh73990303');
+}
+
 exports.checkUser = async (req,res,next) => {
      
     const email = req.body.email;
@@ -61,7 +66,7 @@ exports.checkUser = async (req,res,next) => {
                   throw new Error("Something Went Wrong");
                }
                if(result === true){
-                  return res.status(201).json({message:"user logged in successfully", success:true});
+                  return res.status(201).json({message:"user logged in successfully", token: generateAccessToken(user.id,user.name)});
                }
                else{
                   return res.status(401).json({message:"user not authorized" , success: false});
@@ -80,55 +85,3 @@ exports.checkUser = async (req,res,next) => {
 
 };
 
-exports.postExpense = async (req,res,next) =>{
-
-   const amount = req.body.amount;
-   const description = req.body.description;
-   const category = req.body.category;
-
-   try{
-     const answer =  await Expense.create({
-         amount:amount,
-         description:description,
-         category:category
-      })
-
-      res.status(201).json(answer);
- }
- catch(err){
-   console.log(err);
-    res.status(500).json(err);
- }
-
-};
-
-exports.getExpense = async (req,res,next) => {
-  
-   try{
-      const Expenses = await Expense.findAll();
-      console.log(Expenses);
-      res.status(201).json(Expenses); 
-   }
-  catch(err){
-      res.status(404).json(err);
-  }
-
-};
-
-exports.deleteExpense = async(req,res,next) => {
-
-    const id = req.params.ExpenseId;
-
-   try{
-        await Expense.destroy({
-         
-         where :{
-           id:id
-         }
-
-        });
-   }
-   catch(err){
-     res.status(404).json(err);
-   }
-};
