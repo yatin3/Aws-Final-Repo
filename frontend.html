@@ -28,6 +28,10 @@
         </ul>
     </form>
 
+    <button id="rzp-button1">Buy Premium</button>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
 
     <script>
@@ -101,6 +105,43 @@
    catch(err){
     console.log(err)
    }
+ }
+
+ document.getElementById('rzp-button1').onclick = async function(e) {
+
+    const token = localStorage.getItem('token');
+    const response = await axios.get("http://localhost:3000/purchase/premiummembership", { headers: {"Authorization": token}});
+
+    console.log(response);
+
+    var options = 
+    {
+        
+        "key" : response.data.key_id,
+        "order_id" : response.data.order.id,
+        "handler": async function (res){
+            await axios.post("http://localhost:3000/purchase/updatetransactionstatus",{
+                order_id: options.order_id,
+                payment_id: res.razorpay_payment_id,
+            },{headers: {"Authorization" : token}})
+            console.log("second");
+            console.log(res);
+
+            alert("You Are a Premium User")
+            
+        },
+    };
+   
+    console.log("first");
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+
+    rzp1.on('payment.failed', async function(response){
+        
+       const answer =  await axios.post("http://localhost:3000/purchase/updateFailedtransactionstatus",{order_id: options.order_id},{headers: {"Authorization" : token}})
+
+       console.log(answer);
+    });
  }
 
     </script>
