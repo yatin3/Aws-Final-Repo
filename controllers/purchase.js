@@ -1,5 +1,12 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/orders');
+const jwt = require('jsonwebtoken');
+
+function generateAccessToken(id,name,ispremiumuser){
+  
+    return jwt.sign({userid:id, name:name, ispremiumuser:ispremiumuser }, '87659937449fgjdh73990303');
+ }
+ 
 
 exports.purchasepremium = async (req,res) => {
     try{
@@ -63,7 +70,7 @@ exports.updateTransactionStatus = async (req,res) => {
 
          Promise.all([promise1,promise2])
          .then(()=>{
-            return res.status(202).json({success: true, message:"Transaction Successful"});
+            return res.status(202).json({success: true, message:"Transaction Successful",token: generateAccessToken(req.user.id,req.user.name,true)});
          })
                   
     }
