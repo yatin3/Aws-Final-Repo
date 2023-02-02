@@ -41,6 +41,12 @@
 
           </div>
 
+          <p>Expenses Per Page</p>
+          <form onsubmit="Helper(event)">
+          <input type="text" name="row" id="row">
+          <input type="submit" value="page">
+          </form>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -100,10 +106,22 @@
 //      }
 //  })
 
+function Helper(e){
+  e.preventDefault();
+
+    const rows = document.getElementById('row');
+    localStorage.setItem('rows',rows.value);
+
+   // console.log(rows.value);
+    
+    getExpenses(1);
+}
+
 window.addEventListener('DOMContentLoaded',async () => {
      const token = localStorage.getItem('token');
      const decodedToken = parseJwt(token);
     // console.log(decodedToken);
+   
 
      const isAdmin = decodedToken.ispremiumuser;
 
@@ -114,18 +132,18 @@ window.addEventListener('DOMContentLoaded',async () => {
             showLeaderboard();
      }
 
-     const page = 1;
+  //    const page = 1;
 
-     const Expenses = await axios.get(`http://localhost:3000/expense/expense?page=${page}`, { headers: {"Authorization": token}});
-   //  console.log(Expenses);
-     const{expenses,...pageData} = Expenses.data
-     console.log(pageData);
-     console.log(expenses);
-     for(let i=0; i<expenses.length; i++){
-        showUserOnScreen(expenses[i]);
-     }
+  // const Expenses = await axios.get(`http://localhost:3000/expense/expense?page=${page}`, { headers: {"Authorization": token}});
+  //  //  console.log(Expenses);
+  //    const{expenses,...pageData} = Expenses.data
+  //   //  console.log(pageData);
+  //   //  console.log(expenses);
+  //    for(let i=0; i<expenses.length; i++){
+  //       showUserOnScreen(expenses[i]);
+  //    }
 
-     showPagination(pageData);
+  //    showPagination(pageData);
  })
 
  function showUserOnScreen(realObj){
@@ -189,7 +207,9 @@ window.addEventListener('DOMContentLoaded',async () => {
 
  async function getExpenses(page){
     const token = localStorage.getItem('token');
-   const Expenses =  await axios.get(`http://localhost:3000/expense/expense?page=${page}`,{ headers: {"Authorization": token}});
+    const rows = localStorage.getItem('rows');
+    console.log(rows);
+   const Expenses =  await axios.get(`http://localhost:3000/expense/expense?page=${page}&rows=${rows}`,{ headers: {"Authorization": token}});
 
    const{expenses,...pageData} = Expenses.data
    

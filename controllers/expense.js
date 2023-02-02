@@ -54,13 +54,17 @@ exports.getExpense = async (req,res,next) => {
      
       const page = req.query.page || 1;
 
-      const Items_Per_Page = 2;
+      const rows = req.query.rows;
+
+      console.log(rows);
+
+      const Items_Per_Page = rows;
 
       const count = await Expense.count();
 
     const Expenses = await Expense.findAll({
       offset: (page-1) * Items_Per_Page,
-      limit: 2,
+      limit: Number(Items_Per_Page),
     });
 
      // console.log(Expenses);
