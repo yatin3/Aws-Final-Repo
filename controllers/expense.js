@@ -32,21 +32,54 @@ exports.postExpense = async (req,res,next) =>{
  
  };
  
- exports.getExpense = async (req,res,next) => {
+//  exports.getExpense = async (req,res,next) => {
    
-    try{
-      // const Expenses = await Expense.findAll({where: {userId: req.user.id}});
-       //const Expenses = await req.user.getExpenses();
-     const Expenses = await Expense.findAll();
+//     try{
+//       // const Expenses = await Expense.findAll({where: {userId: req.user.id}});
+//        //const Expenses = await req.user.getExpenses();
+//      const Expenses = await Expense.findAll();
 
-      // console.log(Expenses);
-       res.status(201).json(Expenses); 
-    }
-   catch(err){
-       res.status(404).json(err);
-   }
+//       // console.log(Expenses);
+//        res.status(201).json(Expenses); 
+//     }
+//    catch(err){
+//        res.status(404).json(err);
+//    }
  
- };
+//  };
+
+exports.getExpense = async (req,res,next) => {
+   
+   try{
+     
+      const page = req.query.page || 1;
+
+      const Items_Per_Page = 2;
+
+      const count = await Expense.count();
+
+    const Expenses = await Expense.findAll({
+      offset: (page-1) * Items_Per_Page,
+      limit: 2,
+    });
+
+     // console.log(Expenses);
+      res.status(201).json({
+         expenses:Expenses,
+         currentPage: Number(page),
+         hasNextPage:  Items_Per_Page*page < count,
+         nextPage:Number(page)+1,
+         hasPreviousPage:Number(page)>1,
+         previousPage:Number(page)-1,
+         lastPage:Math.ceil(count/Items_Per_Page)
+      }); 
+   }
+  catch(err){
+      res.status(404).json(err);
+  }
+
+};
+
  
  exports.deleteExpense = async(req,res,next) => {
  

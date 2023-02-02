@@ -37,6 +37,10 @@
 
     <button onclick="download()" id="downloadexpense">Download File</button>
 
+          <div id="pagination">
+
+          </div>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -75,10 +79,31 @@
 }
 
 
- window.addEventListener('DOMContentLoaded',async () => {
+//  window.addEventListener('DOMContentLoaded',async () => {
+//      const token = localStorage.getItem('token');
+//      const decodedToken = parseJwt(token);
+//      console.log(decodedToken);
+
+//      const isAdmin = decodedToken.ispremiumuser;
+
+//      if(isAdmin){
+//         document.getElementById('rzp-button1').remove();
+//             //document.body.innerHTML = document.body.innerHTML+'<p>You are premium user</p>';
+//             document.getElementById('message').innerHTML += 'You are premium user' ;
+//             showLeaderboard();
+//      }
+
+//      const Expenses = await axios.get("http://localhost:3000/expense/expense", { headers: {"Authorization": token}});
+
+//      for(let i=0; i<Expenses.data.length; i++){
+//         showUserOnScreen(Expenses.data[i]);
+//      }
+//  })
+
+window.addEventListener('DOMContentLoaded',async () => {
      const token = localStorage.getItem('token');
      const decodedToken = parseJwt(token);
-     console.log(decodedToken);
+    // console.log(decodedToken);
 
      const isAdmin = decodedToken.ispremiumuser;
 
@@ -89,11 +114,18 @@
             showLeaderboard();
      }
 
-     const Expenses = await axios.get("http://localhost:3000/expense/expense", { headers: {"Authorization": token}});
+     const page = 1;
 
-     for(let i=0; i<Expenses.data.length; i++){
-        showUserOnScreen(Expenses.data[i]);
+     const Expenses = await axios.get(`http://localhost:3000/expense/expense?page=${page}`, { headers: {"Authorization": token}});
+   //  console.log(Expenses);
+     const{expenses,...pageData} = Expenses.data
+     console.log(pageData);
+     console.log(expenses);
+     for(let i=0; i<expenses.length; i++){
+        showUserOnScreen(expenses[i]);
      }
+
+     showPagination(pageData);
  })
 
  function showUserOnScreen(realObj){
@@ -119,6 +151,53 @@
   li.childNodes[5].addEventListener('click',deleteClick);
      
   ul.appendChild(li);
+ }
+
+ function showPagination(response){
+
+  const currentPage = response.currentPage;
+  const hasNextPage = response.hasNextPage;
+  const nextPage = response.nextPage;
+  const hasPreviousPage = response.hasPreviousPage;
+  const previousPage = response.previousPage;
+  const lastPage = response.lastPage;
+
+  const pagination = document.getElementById('pagination');
+
+  pagination.innerHTML = '';
+
+  if(hasPreviousPage){
+    const btn2 = document.createElement('button');
+    btn2.innerHTML = previousPage;
+    btn2.addEventListener('click', ()=> getExpenses(previousPage));
+    pagination.appendChild(btn2);
+  }
+
+  const btn1 = document.createElement('button');
+  btn1.innerHTML = `<h3>${currentPage}</h3>`;
+  btn1.addEventListener('click', ()=> getExpenses(currentPage));
+  pagination.appendChild(btn1);
+
+  if(hasNextPage){
+    const btn3 = document.createElement('button');
+    btn3.innerHTML = nextPage;
+    btn3.addEventListener('click', ()=> getExpenses(nextPage));
+    pagination.appendChild(btn3);
+
+  }
+ }
+
+ async function getExpenses(page){
+    const token = localStorage.getItem('token');
+   const Expenses =  await axios.get(`http://localhost:3000/expense/expense?page=${page}`,{ headers: {"Authorization": token}});
+
+   const{expenses,...pageData} = Expenses.data
+   
+   for(let i=0; i<expenses.length; i++){
+        showUserOnScreen(expenses[i]);
+     }
+
+     showPagination(pageData);
  }
 
  async function deleteClick(e){
