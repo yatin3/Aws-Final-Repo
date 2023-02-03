@@ -47,6 +47,10 @@
           <input type="submit" value="page">
           </form>
 
+          <ul id="downloads">
+
+          </ul>
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
@@ -126,24 +130,36 @@ window.addEventListener('DOMContentLoaded',async () => {
      const isAdmin = decodedToken.ispremiumuser;
 
      if(isAdmin){
-        document.getElementById('rzp-button1').remove();
+           document.getElementById('rzp-button1').remove();
             //document.body.innerHTML = document.body.innerHTML+'<p>You are premium user</p>';
             document.getElementById('message').innerHTML += 'You are premium user' ;
             showLeaderboard();
      }
 
-  //    const page = 1;
+     const page = 1;
 
-  // const Expenses = await axios.get(`http://localhost:3000/expense/expense?page=${page}`, { headers: {"Authorization": token}});
-  //  //  console.log(Expenses);
-  //    const{expenses,...pageData} = Expenses.data
-  //   //  console.log(pageData);
-  //   //  console.log(expenses);
-  //    for(let i=0; i<expenses.length; i++){
-  //       showUserOnScreen(expenses[i]);
-  //    }
+  const Expenses = await axios.get(`http://localhost:3000/expense/expense?page=${page}&rows=${4}`, { headers: {"Authorization": token}});
+   //  console.log(Expenses);
+     const{expenses,...pageData} = Expenses.data
+    //  console.log(pageData);
+    //  console.log(expenses);
+     for(let i=0; i<expenses.length; i++){
+        showUserOnScreen(expenses[i]);
+     }
 
-  //    showPagination(pageData);
+     showPagination(pageData);
+
+     const Downloads = await axios.get(`http://localhost:3000/user/getDownloads`, { headers: {"Authorization": token}});
+
+     console.log(Downloads);
+    
+    const listItem = document.getElementById('downloads');
+    
+    for(let i=0; i<Downloads.data.length; i++){
+      listItem.innerHTML += `<li>${Downloads.data[i].Download}</li>`
+    }
+    
+
  })
 
  function showUserOnScreen(realObj){
@@ -240,10 +256,11 @@ window.addEventListener('DOMContentLoaded',async () => {
     const token = localStorage.getItem('token');
     axios.get('http://localhost:3000/user/download',{ headers: {"Authorization": token}})
     .then((response)=>{
-      if(response.status === 201){
+      if(response.status === 200){
         let a = document.createElement('a');
-        a.href = response.data.fileUrl;
+        a.href = response.data.fileURL;
         a.download = 'myexpense.csv';
+       // console.log(a);
         a.click();
       }else{
          throw new Error(response.data.message);

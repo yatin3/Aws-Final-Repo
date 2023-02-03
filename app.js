@@ -13,6 +13,7 @@ const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/orders');
 const ForgotPassword = require('./models/forgotpassword');
+const DownloadedFiles = require('./models/downloadedfile');
 
 const cors = require('cors');
 app.use(cors());
@@ -22,7 +23,7 @@ const sequelize = require('./util/database');
 app.use(bodyParser.json());
 
 app.use('/user',userRoute);
-app.use('/Expense',expenseRoute);
+app.use('/expense',expenseRoute);
 app.use('/purchase',purchaseRoute);
 app.use('/premium',premiumfeatureRoute);
 app.use('/password',ForgotPasswordRoute);
@@ -36,5 +37,8 @@ Order.belongsTo(User);
 User.hasMany(ForgotPassword);
 ForgotPassword.belongsTo(User);
 
-sequelize.sync().then((m) => app.listen(3000)).catch(err => console.log(err));
+User.hasMany(DownloadedFiles);
+DownloadedFiles.belongsTo(User);
+
+sequelize.sync().then((m) => app.listen(process.env.PORT || 3000)).catch(err => console.log(err));
 
