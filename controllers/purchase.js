@@ -4,16 +4,24 @@ const jwt = require('jsonwebtoken');
 
 function generateAccessToken(id,name,ispremiumuser){
   
-    return jwt.sign({userid:id, name:name, ispremiumuser:ispremiumuser }, '87659937449fgjdh73990303');
+    // return jwt.sign({userid:id, name:name, ispremiumuser:ispremiumuser }, '87659937449fgjdh73990303');
+    return jwt.sign({userid:id, name:name, ispremiumuser:ispremiumuser }, process.env.Token_Key);
  }
  
 
 exports.purchasepremium = async (req,res) => {
     try{
         var rzp = new Razorpay({
-            key_id : 'rzp_test_QWlFxI7eWHT6CB',
-            key_secret : 'iSqopbj5AXEWFzvku4nGNHfN'
+            key_id : 'rzp_test_oEV9ZO0VVVpcgP',
+            key_secret : 'dhsb4a7PgnSMMRMdKuj9FtIn'
         })
+        // console.log(process.env.Razorpay_Key);
+        // console.log(process.env.Razorpay_Secret);
+
+        // var rzp = new Razorpay({
+        //     key_id : process.env.Razorpay_Key,
+        //     key_secret : process.env.Razorpay_Secret
+        // })
     
         const amount = 2500;
 
