@@ -39,11 +39,18 @@ app.use(morgan('combined', { stream: accessLogStream}));
 
 app.use(bodyParser.json());
 
+app.use(express.static('public'))
+
 app.use('/user',userRoute);
 app.use('/expense',expenseRoute);
 app.use('/purchase',purchaseRoute);
 app.use('/premium',premiumfeatureRoute);
 app.use('/password',ForgotPasswordRoute);
+
+app.use((req,res) => {
+   console.log('urll',req.url);
+     res.sendFile(path.join(__dirname,`public/${req.url}`));
+});
 
 //console.log(process.env.NODE_ENV);
 
