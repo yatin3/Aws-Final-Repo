@@ -11,17 +11,17 @@ function generateAccessToken(id,name,ispremiumuser){
 
 exports.purchasepremium = async (req,res) => {
     try{
-        var rzp = new Razorpay({
-            key_id : 'rzp_test_oEV9ZO0VVVpcgP',
-            key_secret : 'dhsb4a7PgnSMMRMdKuj9FtIn'
-        })
+        // var rzp = new Razorpay({
+        //     key_id : 'rzp_test_oEV9ZO0VVVpcgP',
+        //     key_secret : 'dhsb4a7PgnSMMRMdKuj9FtIn'
+        // })
         // console.log(process.env.Razorpay_Key);
         // console.log(process.env.Razorpay_Secret);
 
-        // var rzp = new Razorpay({
-        //     key_id : process.env.Razorpay_Key,
-        //     key_secret : process.env.Razorpay_Secret
-        // })
+        var rzp = new Razorpay({
+            key_id : process.env.Razorpay_Key,
+            key_secret : process.env.Razorpay_Secret
+        })
     
         const amount = 2500;
 

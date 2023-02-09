@@ -1,15 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const helmet = require('helmet');
-const compression = require('compression');
-const morgan = require('morgan');
+// const helmet = require('helmet');
+// const compression = require('compression');
+// const morgan = require('morgan');
 const fs = require('fs');
 const path = require('path');
 
 const app = express();
 
-// const dotenv = require('dotenv');
-// dotenv.config();
+const dotenv = require('dotenv');
+dotenv.config();
 
 const userRoute = require('./routes/user');
 const expenseRoute = require('./routes/expense');
@@ -33,13 +33,16 @@ app.use(cors());
 
 const sequelize = require('./util/database');
 
-app.use(helmet());
-app.use(compression());
-app.use(morgan('combined', { stream: accessLogStream}));
+// app.use(helmet());
+// app.use(compression());
+// app.use(morgan('combined', { stream: accessLogStream}));
 
 app.use(bodyParser.json());
 
-app.use(express.static('public'))
+//app.use(bodyParser.urlencoded({ extended: true }));
+
+//app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 app.use('/user',userRoute);
 app.use('/expense',expenseRoute);
@@ -49,7 +52,8 @@ app.use('/password',ForgotPasswordRoute);
 
 app.use((req,res) => {
    console.log('urll',req.url);
-     res.sendFile(path.join(__dirname,`public/${req.url}`));
+   console.log(path.join(__dirname,`public/${req.url}`));
+     res.sendFile(path.join(__dirname,`public/login.html`));
 });
 
 //console.log(process.env.NODE_ENV);
