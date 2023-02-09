@@ -9,7 +9,7 @@ async function Login(event){
     }
     console.log(obj);
      try{
-        const response = await axios.post("http://35.78.232.87:3000/user/login",obj);
+        const response = await axios.post("http://localhost:3000/user/login",obj);
 
         if(response.data === null){
             throw new Error ("message: User donot exist");

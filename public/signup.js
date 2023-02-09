@@ -12,7 +12,7 @@ form.addEventListener('submit',(e)=>{
        password:password
    }
 
-   axios.post("http://35.78.232.87:3000/user/signup",obj)
+   axios.post("http://localhost:3000/user/signup",obj)
    .then((res) => {
        console.log(res)
        document.body.innerHTML =  document.body.innerHTML + ` ${res.data.message}`;
