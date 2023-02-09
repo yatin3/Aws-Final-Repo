@@ -52,6 +52,7 @@ app.use('/password',ForgotPasswordRoute);
 
 app.use((req,res) => {
    console.log('urll',req.url);
+   console.log("added extra logs");
    console.log(path.join(__dirname,`public/${req.url}`));
      res.sendFile(path.join(__dirname,`public/login.html`));
 });
